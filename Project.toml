@@ -6,3 +6,8 @@ version = "0.1.0"
 [deps]
 JSON = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
 Scratch = "6c6a2e73-6563-6170-7368-637461726353"
+
+[compat]
+julia = "1.10"
+JSON = "0.21.4"
+Scratch = "1.2.1"
