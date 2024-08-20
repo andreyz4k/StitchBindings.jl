@@ -1,4 +1,0 @@
-[
-    "(Y (lam (lam ((is_nil $0) nil (cons (+ $0))))))",
-    "(Y (lam (lam ((is_nil $0) nil (cons (- $0))))))"
-]
