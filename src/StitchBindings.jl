@@ -55,7 +55,14 @@ function compress_backend(
         name_mapping = []
     end
 
-    kws = Dict("iterations" => iterations, "max_arity" => max_arity, "threads" => threads, "silent" => silent)
+    kws = Dict(
+        "iterations" => iterations,
+        "max_arity" => max_arity,
+        "threads" => threads,
+        "silent" => silent,
+        "rewritten_dreamcoder" => rewritten_dreamcoder,
+    )
+
     merge!(kws, Dict(string(k) => kwargs[k] for k in keys(kwargs)))
 
     args = join([build_arg(k, v) for (k, v) in kws], " ")
