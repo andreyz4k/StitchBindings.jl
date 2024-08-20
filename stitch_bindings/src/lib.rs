@@ -1,7 +1,7 @@
 use ::stitch_core::*;
 use clap::Parser;
 
-use std::ffi::CStr;
+use std::ffi::{CStr, CString};
 use std::os::raw::c_char;
 
 #[no_mangle]
@@ -70,6 +70,8 @@ pub extern "C" fn compress_backend_c(
     let (_step_results, json_res) =
         multistep_compression(&programs, tasks, weights, name_mapping, None, &cfg);
 
-    // return as something you could json.loads(out) from in python
-    json_res.to_string().as_ptr() as *mut c_char
+    // return as something you could JSON.parse(out) from in Julia
+    let res = CString::new(json_res.to_string()).expect("CString::new failed");
+
+    res.as_ptr() as *mut c_char
 }
