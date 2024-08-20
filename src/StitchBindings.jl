@@ -27,7 +27,7 @@ function dreamcoder_program_to_string(program, name_mapping)
     for (name, p) in reverse(name_mapping)
         program = replace(program, p => name)
     end
-    if "#" in program
+    if occursin("#", program)
         error("Rewritten program $program contains #")
     end
     program = replace(program, "(lambda " => "(lam ")
