@@ -86,6 +86,8 @@ function compress_backend(
     )::Cstring
     parsed = JSON.parse(unsafe_string(res))
 
+    @ccall get_stitch_lib().free_string(res::Cstring)
+
     if rewritten_dreamcoder
         abstractions = [Dict("name" => abs["name"], "body" => abs["dreamcoder"]) for abs in parsed["abstractions"]]
         rewritten = parsed["rewritten_dreamcoder"]

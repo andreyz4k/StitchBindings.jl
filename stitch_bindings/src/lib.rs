@@ -73,5 +73,15 @@ pub extern "C" fn compress_backend_c(
     // return as something you could JSON.parse(out) from in Julia
     let res = CString::new(json_res.to_string()).expect("CString::new failed");
 
-    res.as_ptr() as *mut c_char
+    res.into_raw()
+}
+
+#[no_mangle]
+pub extern "C" fn free_string(s: *mut c_char) {
+    if s.is_null() {
+        return;
+    }
+    unsafe {
+        let _ = CString::from_raw(s);
+    }
 }
