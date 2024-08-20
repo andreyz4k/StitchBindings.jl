@@ -23,19 +23,38 @@ function build_arg(name::String, val::Union{Int,String})::String
     return "--$(replace(name, "_" => "-"))=$val"
 end
 
+function dreamcoder_program_to_string(program, name_mapping)
+    for (name, p) in reverse(name_mapping)
+        program = replace(program, p => name)
+    end
+    if "#" in program
+        error("Rewritten program $program contains #")
+    end
+    program = replace(program, "(lambda " => "(lam ")
+    return program
+end
+
 function compress_backend(
     programs::Vector{String},
+    tasks::Vector{String},
+    existing_inventions::Vector{String},
     iterations::Int,
     max_arity::Int = 2,
     threads::Int = 1,
     silent::Bool = true,
+    panic_loud::Bool = false,
+    rewritten_dreamcoder::Bool = false,
     ;
     kwargs...,
 )
-    tasks = pop!(kwargs, "tasks", [])
-    weights = pop!(kwargs, "weights", [])
-    name_mapping = pop!(kwargs, "name_mapping", [])
-    panic_loud = pop!(kwargs, "panic_loud", false)
+    sort!(existing_inventions; by = length)
+    if rewritten_dreamcoder
+        name_mapping = ["dreamcoder_abstraction_$i" => name for (i, name) in enumerate(existing_inventions)]
+        programs = [dreamcoder_program_to_string(program, name_mapping) for program in programs]
+    else
+        name_mapping = []
+    end
+
     merge!(kwargs, Dict("iterations" => iterations, "max_arity" => max_arity, "threads" => threads, "silent" => silent))
 
     args = join([build_arg(k, v) for (k, v) in kwargs], " ")
@@ -46,8 +65,6 @@ function compress_backend(
         length(programs)::Csize_t,
         tasks::Ptr{Cstring},
         length(tasks)::Csize_t,
-        weights::Ptr{Float32},
-        length(weights)::Csize_t,
         cname_mapping::Ptr{Cstring},
         length(cname_mapping)::Csize_t,
         panic_loud::Bool,
@@ -55,11 +72,14 @@ function compress_backend(
     )::Cstring
     parsed = JSON.parse(unsafe_string(res))
 
-    abstractions =
-        [Dict("body" => abs["body"], "name" => abs["name"], "arity" => abs["arity"]) for abs in parsed["abstractions"]]
-    rewritten = parsed["rewritten"]
-    json = parsed
-    return abstractions, rewritten, json
+    if rewritten_dreamcoder
+        abstractions = [Dict("name" => abs["name"], "body" => abs["dreamcoder"]) for abs in parsed["abstractions"]]
+        rewritten = parsed["rewritten_dreamcoder"]
+    else
+        abstractions = [Dict("name" => abs["name"], "body" => abs["body"]) for abs in parsed["abstractions"]]
+        rewritten = parsed["rewritten"]
+    end
+    return abstractions, rewritten
 end
 
 export compress_backend
