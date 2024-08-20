@@ -5,7 +5,13 @@ using JSON
 
 function get_stitch_lib()
     bin_folder = @get_scratch!("bin")
-    path = joinpath(bin_folder, "libstitch_core.dylib")
+    if Sys.isapple()
+        path = joinpath(bin_folder, "libstitch_core.dylib")
+    elseif Sys.islinux()
+        path = joinpath(bin_folder, "libstitch_core.so")
+    else
+        error("Unsupported platform")
+    end
     if !isfile(path)
         error("Stitch library not found at $path")
     end
