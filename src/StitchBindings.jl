@@ -55,9 +55,10 @@ function compress_backend(
         name_mapping = []
     end
 
-    merge!(kwargs, Dict("iterations" => iterations, "max_arity" => max_arity, "threads" => threads, "silent" => silent))
+    kws = Dict("iterations" => iterations, "max_arity" => max_arity, "threads" => threads, "silent" => silent)
+    merge!(kws, Dict(string(k) => kwargs[k] for k in keys(kwargs)))
 
-    args = join([build_arg(k, v) for (k, v) in kwargs], " ")
+    args = join([build_arg(k, v) for (k, v) in kws], " ")
 
     cname_mapping = [k * "," * v for (k, v) in name_mapping]
     res = @ccall get_stitch_lib().compress_backend_c(
