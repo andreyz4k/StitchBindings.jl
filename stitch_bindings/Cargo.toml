@@ -12,4 +12,4 @@ name = "stitch_core"
 [dependencies]
 clap = {version = "3.1.0"}
 # stitch_core = {path = "../stitch"}
-stitch_core = {git = "https://github.com/andreyz4k/stitch", commit = "59cc81e518f1a53d90a0dcce69989423c6b6ff81"}
+stitch_core = {git = "https://github.com/andreyz4k/stitch", commit = "13da96c454047ed5b505176c9af57a076a30ad09"}
