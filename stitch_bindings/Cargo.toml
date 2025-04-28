@@ -1,7 +1,7 @@
 [package]
 edition = "2021"
 name = "stitch_bindings"
-version = "0.1.28"
+version = "0.1.29"
 
 [lib]
 crate-type = ["cdylib"]
@@ -12,4 +12,4 @@ name = "stitch_core"
 [dependencies]
 clap = {version = "3.1.0"}
 # stitch_core = {path = "../../stitch"}
-stitch_core = {git = "https://github.com/andreyz4k/stitch", commit = "575342f623116aebad3919d6d773edce294b06d3"}
+stitch_core = {git = "https://github.com/andreyz4k/stitch", commit = "262e674c310da9dc4a44143e36c0a7d59413439f"}
